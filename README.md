@@ -11,7 +11,7 @@
 ```bash
   ├─CNN
   │  └─LeNet_5
-  │     
+  │  └─AlexNet
 ``` 
 
 
