@@ -14,6 +14,7 @@
   ├─CNN
   │  └─LeNet_5
   │  └─AlexNet
+  |  └─ResNet
 ``` 
 
 
