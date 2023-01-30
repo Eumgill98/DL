@@ -205,5 +205,6 @@ def resnet152(pretrained=False, **kwargs):
         model.load_state_dict(torch.hub.load_state_dict_from_url(model_name['resnet152']))
     return model
 
-
+"""
 print(resnet34(pretrained=True))
+"""
