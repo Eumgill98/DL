@@ -15,6 +15,7 @@
   │  └─LeNet_5
   │  └─AlexNet
   |  └─ResNet
+  |  └─MobileNetV1
 ``` 
 
 
