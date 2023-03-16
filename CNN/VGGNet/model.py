@@ -22,15 +22,8 @@ class VGG(nn.Module):
     def forward(self, x):
         out = self.features(x)
         out = torch.flatten(out, 1)
-        out = nn.Sequential(
-            nn.Linear(out.size(1), 4096),
-            nn.ReLU(True),
-            nn.Dropout(0.5),
-            nn.Linear(4096, 4096),
-            nn.ReLU(True),
-            nn.Dropout(0.5),
-            nn.Linear(4096, self.num_classes),
-        )(out)
+        fc = self.classificate(out)
+        out = fc(out)
 
         return out
 
@@ -47,6 +40,18 @@ class VGG(nn.Module):
                 in_channels = x
         return nn.Sequential(*layers)
     
+    def classificate(self, out):
+        classificate = nn.Sequential(
+            nn.Linear(out.size(1), 4096),
+            nn.ReLU(True),
+            nn.Dropout(0.5),
+            nn.Linear(4096, 4096),
+            nn.ReLU(True),
+            nn.Dropout(0.5),
+            nn.Linear(4096, self.num_classes),
+        )
+        return classificate
+    
 
 
 
@@ -56,5 +61,6 @@ def test():
         net = VGG(f'{i}')
         x = torch.randn(2, 3, 224, 224)
         y = net(x)
+        print(y)
 
 test()
