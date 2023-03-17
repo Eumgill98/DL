@@ -11,11 +11,15 @@
 <h2>파일구조(file tree)</h2>
 
 ```bash
+  ├─AutoEncoder
   ├─CNN
-  │  └─LeNet_5
   │  └─AlexNet
-  |  └─ResNet
+  │  └─LeNet_5
   |  └─MobileNetV1
+  |  └─ResNet
+  |  └─VGGNet
+  ├─function
+  |  └─softmax
 ``` 
 
 
