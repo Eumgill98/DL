@@ -13,7 +13,7 @@
 - Using data : MNIST data set by pytorch
 
 
-<h2>result</h2>
+<h2>Result</h2>
 <img src="./img/generated_0_ex0.png">
 <img src="./img/generated_1_ex0.png">
 <img src="./img/generated_2_ex0.png">
