@@ -17,3 +17,7 @@
 <img src="./img/generated_0_ex0.png">
 <img src="./img/generated_1_ex0.png">
 <img src="./img/generated_2_ex0.png">
+
+<h2>Reference</h2>
+
+[Aladdin Persson - Youtube](https://www.youtube.com/watch?v=VELQT1-hILo) 
