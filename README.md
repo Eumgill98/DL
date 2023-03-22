@@ -13,14 +13,14 @@
 ```bash
   ├─AutoEncoder
   ├─CNN
-  │  └─AlexNet
-  │  └─LeNet_5
-  |  └─MobileNetV1
-  |  └─ResNet
-  |  └─VGGNet
+  |   └─AlexNet
+  |   └─LeNet_5
+  |   └─MobileNetV1
+  |   └─ResNet
+  |   └─VGGNet
   ├─VAE
   ├─function
-  |  └─softmax
+  |   └─softmax
 ``` 
 
 
