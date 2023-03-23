@@ -11,14 +11,16 @@
 <h2>파일구조(file tree)</h2>
 
 ```bash
-  ├─AutoEncoder
+
   ├─CNN
   |   └─AlexNet
   |   └─LeNet_5
   |   └─MobileNetV1
   |   └─ResNet
   |   └─VGGNet
-  ├─VAE
+  ├─Generative model
+  |   └─AutoEncoder
+  |   └─VAE
   ├─function
   |   └─softmax
 ``` 
