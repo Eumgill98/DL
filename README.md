@@ -18,6 +18,7 @@
   |   └─MobileNetV1
   |   └─ResNet
   |   └─VGGNet
+  |   └─DenseNet
   ├─Generative model
   |   └─AutoEncoder
   |   └─VAE
