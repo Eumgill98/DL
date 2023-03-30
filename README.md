@@ -12,7 +12,7 @@
 
 ```bash
 
-  ├─CNN
+  ├─classifiaction
   |   └─AlexNet
   |   └─LeNet_5
   |   └─MobileNetV1
