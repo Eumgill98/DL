@@ -19,11 +19,15 @@
   |   └─ResNet
   |   └─VGGNet
   |   └─DenseNet
+  ├─ Semantic Segmentation
+  |   └─FCN
   ├─Generative model
   |   └─AutoEncoder
   |   └─VAE
   ├─function
   |   └─softmax
+  
+
 ``` 
 
 
