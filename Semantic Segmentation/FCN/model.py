@@ -1,76 +1,76 @@
-#Fully Convolution Model used VGGNet model
-## Reference code : https://gaussian37.github.io/vision-segmentation-fcn/
-
-import torch
-import torch.nn as nn
-from torchvision import models
+import torch 
+from torch import nn
 from torchvision.models.vgg import VGG
+from torchvision import models
 
+#backbone use VGG 
 
 class FCN(nn.Module):
     def __init__(self, backbone, model_type='FCN32', num_class=2):
         super().__init__()
-        self.num_class = num_class
         self.model_type = model_type
 
         self.backbone = backbone
+        
         self.relu = nn.ReLU(inplace=True)
+        
+        
 
-        self.deconv1 = nn.ConvTranspose2d(512, 512, kernel_size=3, stride=2, padding=1, dilation=1, output_padding=1)
-        self.bn1     = nn.BatchNorm2d(512)
-        self.deconv2 = nn.ConvTranspose2d(512, 256, kernel_size=3, stride=2, padding=1, dilation=1, output_padding=1)
-        self.bn2     = nn.BatchNorm2d(256)
-        self.deconv3 = nn.ConvTranspose2d(256, 128, kernel_size=3, stride=2, padding=1, dilation=1, output_padding=1)
-        self.bn3     = nn.BatchNorm2d(128)
-        self.deconv4 = nn.ConvTranspose2d(128, 64, kernel_size=3, stride=2, padding=1, dilation=1, output_padding=1)
-        self.bn4     = nn.BatchNorm2d(64)
-        self.deconv5 = nn.ConvTranspose2d(64, 32, kernel_size=3, stride=2, padding=1, dilation=1, output_padding=1)
-        self.bn5     = nn.BatchNorm2d(32)
-        self.classifier = nn.Conv2d(32, num_class, kernel_size=1)
+        self.conv_out1 = nn.Conv2d(512, 512, kernel_size=1, padding=0, stride=1)
+        self.conv_out2 = nn.Conv2d(512, 512, kernel_size=1, padding=0, stride=1)
+        self.conv_out3 = nn.Conv2d(512, num_class, kernel_size=1, padding=0, stride=1)
+        self.bn1 = nn.BatchNorm2d(512)
+        self.bn2 = nn.BatchNorm2d(512)
+        self.bn3 = nn.BatchNorm2d(num_class)
+        self.upsample32 = torch.nn.Upsample(scale_factor=32, mode='bilinear', align_corners=False)
+        self.upsample16 = torch.nn.Upsample(scale_factor=16, mode='bilinear', align_corners=False )
+        self.upsample8 =  torch.nn.Upsample(scale_factor=8, mode='bilinear', align_corners=False)
+        self.upsample2_1 = torch.nn.Upsample(scale_factor=2,mode='bilinear', align_corners=False )
+        self.upsample2_2 = torch.nn.Upsample(scale_factor=2,mode='bilinear', align_corners=False )
+
+        self.backbone_one1 = nn.Conv2d(512, num_class, kernel_size=1, padding=0, stride=1)
+        self.backbone_one2 = nn.Conv2d(256, num_class, kernel_size=1, padding=0, stride=1)
 
     def forward(self, x):
-        pre_output = self.backbone(x)
-        if self.model_type == 'FCN32':
-            x5 = pre_output['x5']
-
-            score = self.bn1(self.relu(self.deconv1(x5)))     # size=(N, 512, x.H/16, x.W/16)
-            score = self.bn2(self.relu(self.deconv2(score)))  # size=(N, 256, x.H/8, x.W/8)
-            score = self.bn3(self.relu(self.deconv3(score)))  # size=(N, 128, x.H/4, x.W/4)
-            score = self.bn4(self.relu(self.deconv4(score)))  # size=(N, 64, x.H/2, x.W/2)
-            score = self.bn5(self.relu(self.deconv5(score)))  # size=(N, 32, x.H, x.W)
-            score = self.classifier(score)
+        backbone_out = self.backbone(x)
+        x3 = backbone_out['x3']
+        x4 = backbone_out['x4']
+        x5 = backbone_out['x5']
         
-        elif self.model_type == 'FCN16':
-            x4 = pre_output['x4']
-            x5 = pre_output['x5']
-
-            score = self.relu(self.deconv1(x5))               # size=(N, 512, x.H/16, x.W/16)
-            score = self.bn1(score + x4)                      # element-wise add, size=(N, 512, x.H/16, x.W/16)
-            score = self.bn2(self.relu(self.deconv2(score)))  # size=(N, 256, x.H/8, x.W/8)
-            score = self.bn3(self.relu(self.deconv3(score)))  # size=(N, 128, x.H/4, x.W/4)
-            score = self.bn4(self.relu(self.deconv4(score)))  # size=(N, 64, x.H/2, x.W/2)
-            score = self.bn5(self.relu(self.deconv5(score)))  # size=(N, 32, x.H, x.W)
-            score = self.classifier(score)
-
-        else:
-            x5 = pre_output['x5']  # size=(N, 512, x.H/32, x.W/32)
-            x4 = pre_output['x4']  # size=(N, 512, x.H/16, x.W/16)
-            x3 = pre_output['x3']  # size=(N, 256, x.H/8,  x.W/8)
-
-            score = self.relu(self.deconv1(x5))               # size=(N, 512, x.H/16, x.W/16)
-            score = self.bn1(score + x4)                      # element-wise add, size=(N, 512, x.H/16, x.W/16)
-            score = self.relu(self.deconv2(score))            # size=(N, 256, x.H/8, x.W/8)
-            score = self.bn2(score + x3)                      # element-wise add, size=(N, 256, x.H/8, x.W/8)
-            score = self.bn3(self.relu(self.deconv3(score)))  # size=(N, 128, x.H/4, x.W/4)
-            score = self.bn4(self.relu(self.deconv4(score)))  # size=(N, 64, x.H/2, x.W/2)
-            score = self.bn5(self.relu(self.deconv5(score)))  # size=(N, 32, x.H, x.W)
-            score = self.classifier(score)                    # size=(N, n_class, x.H/1, x.W/1)
+        if self.model_type=='FCN32':
+            x = self.bn1(self.relu(self.conv_out1(x5)))
+            x = self.bn2(self.relu(self.conv_out2(x)))
+            x = self.bn3(self.relu(self.conv_out3(x)))
+            x = self.upsample32(x)
         
-        return score
+        elif self.model_type=='FCN16':
+            x_ = self.backbone_one1(x4)
+
+            x = self.bn1(self.relu(self.conv_out1(x5)))
+            x = self.bn2(self.relu(self.conv_out2(x)))
+            x = self.bn3(self.relu(self.conv_out3(x)))
+            x = self.upsample2_1(x)
+            
+            x = x + x_
+            x = self.upsample16(x)
+
+        elif self.model_type=='FCN8':
+            x_ = self.backbone_one1(x4)
+            x__ = self.backbone_one2(x3)
+
+            x = self.bn1(self.relu(self.conv_out1(x5)))
+            x = self.bn2(self.relu(self.conv_out2(x)))
+            x = self.bn3(self.relu(self.conv_out3(x)))
+            x = self.upsample2_1(x)
+            x = x + x_
+            x = self.upsample2_2(x)
+            x = x__ + x
+            x = self.upsample8(x)
+        
+        return x
 
 
 
-#for pretrainde model VGG
 
 class VGGNet(VGG):
     def __init__(self, pretrained=True, model='vgg16', requires_grad=True, remove_fc=True, show_params=False):
@@ -134,9 +134,5 @@ def make_layers(cfg, batch_norm=False):
 
 
 
-# ##test
-# #backbone
-# backbone = VGGNet()
 
-# for model_t in ['FCN32', 'FCN16', 'FCN8']:
-#     print(FCN(backbone, model_t))
+
