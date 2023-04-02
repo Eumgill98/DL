@@ -17,6 +17,7 @@
   |   └─MobileNetV1
   |   └─ResNet
   |   └─VGGNet
+  |   └─Vit
   |   └─DenseNet
   ├─ Semantic Segmentation
   |   └─FCN
