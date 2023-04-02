@@ -20,6 +20,7 @@
   |   └─DenseNet
   ├─ Semantic Segmentation
   |   └─FCN
+  |   └─Unet
   ├─Generative model
   |   └─AutoEncoder
   |   └─VAE
